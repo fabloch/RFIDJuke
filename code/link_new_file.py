@@ -1,9 +1,20 @@
 import json
 
+DEFAULT_FILEPATH = "code/playslist.json"
 
-def link_new_file(id, filename, playlist):
-    playlist.update({id: filename})
-    with open('playslist.json', 'w') as outfile:
-        json.dump(playlist, outfile)
 
-    return "Playlist updated!"
+def link_new_file(id, filename, filepath=DEFAULT_FILEPATH):
+    try:
+        in_file = open(filepath, "r")
+        playlist = json.load(in_file)
+        in_file.close()
+
+        with open(filepath, "w") as outfile:
+            playlist[id] = filename
+            json.dump(playlist, outfile)
+    except FileNotFoundError:
+        with open(filepath, "w") as outfile:
+            playlist = {id: filename}
+            json.dump(playlist, outfile)
+
+    return playlist
